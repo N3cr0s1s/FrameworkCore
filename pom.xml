@@ -53,5 +53,14 @@
             <scope>runtime</scope>
         </dependency>
         <!-- endregion -->
+
+        <!-- region org.jetbrains.annotation -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- endregion -->
     </dependencies>
 </project>
