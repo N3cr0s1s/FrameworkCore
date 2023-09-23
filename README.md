@@ -11,9 +11,9 @@
     <br />
     <p>Created by: <strong>Necrosis</strong></p>
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/N3cr0s1s/FrameworkCore/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/N3cr0s1s/FrameworkCore/issues">Request Feature</a>
   </p>
 </div>
 
