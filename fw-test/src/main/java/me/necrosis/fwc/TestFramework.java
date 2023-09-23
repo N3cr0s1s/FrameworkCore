@@ -13,6 +13,7 @@ import me.necrosis.fwc.services.impl.TransientServiceImpl;
 import me.necrosis.fwc.services.impl.UserServiceImpl;
 
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class TestFramework extends FrameworkCore {
@@ -41,10 +42,11 @@ public class TestFramework extends FrameworkCore {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        IntStream.of(1).forEach(x -> {throw new NullPointerException();});
     }
 
     @Override
-    public void onEnd() {
+    public void onEnd(boolean successfullyEnded) {
         log.info("Framework ended");
     }
 }
