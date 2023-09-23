@@ -47,7 +47,7 @@ public abstract class FrameworkCore {
         log.trace("{} initialization started...", Constants.FRAMEWORK_CORE_NAME);
 
         registerModules();
-        handleStart(options);
+        handleStart();
 
         log.trace("{} initialization done.", Constants.FRAMEWORK_CORE_NAME);
     }
@@ -70,7 +70,7 @@ public abstract class FrameworkCore {
         this.injector = injector;
     }
 
-    private void handleStart(@NotNull FwOptions options) {
+    public void handleStart() {
         if (!options.isAutoStart()) {
             return;
         }
