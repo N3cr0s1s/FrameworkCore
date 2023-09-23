@@ -1,11 +1,13 @@
 package me.necrosis.fwc;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import me.necrosis.fwc.utils.LoggerUtil;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Framework core main class.
@@ -19,13 +21,29 @@ public abstract class FrameworkCore {
     /**
      * FrameworkCore entry point
      */
+    public FrameworkCore(@NotNull FwOptions options) {
+        Preconditions.checkNotNull(options);
+
+        log.trace("{} initialization started...", Constants.FRAMEWORK_CORE_NAME);
+
+        AbstractModule abstractModule = LoggerUtil.processTimeLogger("Creating common module", log, this::configureServices);
+        this.injector = LoggerUtil.processTimeLogger("Creating injector", log, () -> Guice.createInjector(abstractModule));
+
+        log.trace("{} initialization done.", Constants.FRAMEWORK_CORE_NAME);
+
+        handleStart(options);
+    }
+
     public FrameworkCore() {
-        log.trace("{} initialization started...",Constants.FRAMEWORK_CORE_NAME);
+        this(FwOptions.getDefault());
+    }
 
-        AbstractModule abstractModule = LoggerUtil.processLogger("Creating common module", log, this::configureServices);
-        this.injector = LoggerUtil.processLogger("Creating injector",log, () -> Guice.createInjector(abstractModule));
-
-        log.trace("{} initialization done.",Constants.FRAMEWORK_CORE_NAME);
+    private void handleStart(@NotNull FwOptions options) {
+        if (!options.isAutoStart()) {
+            return;
+        }
+        LoggerUtil.processTimeLogger("Calling start method", log, this::onStart);
+        LoggerUtil.processTimeLogger("Calling end method", log, this::onEnd);
     }
 
     /**
@@ -35,4 +53,7 @@ public abstract class FrameworkCore {
      */
     public abstract AbstractModule configureServices();
 
+    public abstract void onStart();
+
+    public void onEnd() {}
 }
