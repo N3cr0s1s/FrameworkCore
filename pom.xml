@@ -12,6 +12,7 @@
     <modules>
         <module>fw-core</module>
         <module>fw-test</module>
+        <module>fw-utils</module>
     </modules>
 
     <properties>
