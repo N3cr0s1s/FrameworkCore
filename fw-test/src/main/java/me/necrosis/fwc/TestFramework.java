@@ -1,6 +1,7 @@
 package me.necrosis.fwc;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import com.google.inject.Scopes;
 import lombok.extern.slf4j.Slf4j;
 import me.necrosis.fwc.entities.User;
@@ -11,7 +12,9 @@ import me.necrosis.fwc.services.UserService;
 import me.necrosis.fwc.services.impl.MemoryDataAccess;
 import me.necrosis.fwc.services.impl.TransientServiceImpl;
 import me.necrosis.fwc.services.impl.UserServiceImpl;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -48,5 +51,18 @@ public class TestFramework extends FrameworkCore {
     @Override
     public void onEnd(boolean successfullyEnded) {
         log.info("Framework ended");
+    }
+
+    @NotNull
+    @Override
+    public Collection<Module> registerPlugins() {
+        Collection<Module> modules = super.registerPlugins();
+        modules.add(new AbstractModule() {
+            @Override
+            protected void configure() {
+                super.configure();
+            }
+        });
+        return modules;
     }
 }

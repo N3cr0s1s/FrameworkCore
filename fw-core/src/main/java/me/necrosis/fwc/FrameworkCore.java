@@ -4,12 +4,15 @@ import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import me.necrosis.fwc.exception.FwException;
 import me.necrosis.fwc.utils.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -29,8 +32,16 @@ public abstract class FrameworkCore {
 
         log.trace("{} initialization started...", Constants.FRAMEWORK_CORE_NAME);
 
-        AbstractModule abstractModule = LoggerUtil.processTimeLogger("Creating common module", log, this::configureServices);
-        this.injector = LoggerUtil.processTimeLogger("Creating injector", log, () -> Guice.createInjector(abstractModule));
+        Collection<Module> modules = registerPlugins();
+        AbstractModule commonModule = LoggerUtil.processTimeLogger("Creating modules", log, this::configureServices);
+        modules.add(commonModule);
+        this.injector = LoggerUtil.processTimeLogger(
+                "Creating injector", log,
+                () -> Guice.createInjector(modules));
+
+        modules.stream()
+                .filter(x -> !x.equals(commonModule))
+                .forEach(x -> log.trace("Plugin registered: {}", x.getClass()));
 
         log.trace("{} initialization done.", Constants.FRAMEWORK_CORE_NAME);
 
@@ -83,6 +94,10 @@ public abstract class FrameworkCore {
     public abstract AbstractModule configureServices();
 
     public abstract void onStart() throws Throwable;
+
+    public @NotNull Collection<Module> registerPlugins() {
+        return new ArrayList<>();
+    }
 
     public void onEnd(boolean successfullyEnded) throws Throwable {
     }
