@@ -6,18 +6,23 @@ import lombok.*;
  * Options for framework
  */
 @Data
-@Builder
+@Builder(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FwOptions {
 
+
+    @Builder.Default
+    private final boolean autoInit = true;
+
     @Builder.Default
     private final boolean autoStart = true;
 
-    @Builder.Default
-    private final boolean globalExceptionHandler = true;
-
     public static FwOptions getDefault() {
         return new FwOptions();
+    }
+
+    public static FwOptionsBuilder builder() {
+        return new FwOptionsBuilder();
     }
 }

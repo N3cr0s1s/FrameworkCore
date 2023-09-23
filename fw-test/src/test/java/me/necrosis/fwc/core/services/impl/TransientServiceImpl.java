@@ -1,7 +1,6 @@
-package me.necrosis.fwc.services.impl;
+package me.necrosis.fwc.core.services.impl;
 
-import me.necrosis.fwc.services.SingletonService;
-import me.necrosis.fwc.services.TransientService;
+import me.necrosis.fwc.core.services.SingletonService;
 
 import java.util.UUID;
 

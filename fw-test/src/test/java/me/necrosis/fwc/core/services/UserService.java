@@ -1,6 +1,6 @@
-package me.necrosis.fwc.services;
+package me.necrosis.fwc.core.services;
 
-import me.necrosis.fwc.entities.User;
+import me.necrosis.fwc.core.entities.User;
 
 public interface UserService {
 

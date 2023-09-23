@@ -1,4 +1,4 @@
-package me.necrosis.fwc.entities;
+package me.necrosis.fwc.core.entities;
 
 import lombok.Builder;
 import lombok.Data;

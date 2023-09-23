@@ -1,9 +1,9 @@
-package me.necrosis.fwc.services.impl;
+package me.necrosis.fwc.core.services.impl;
 
 import com.google.inject.Inject;
-import me.necrosis.fwc.entities.User;
-import me.necrosis.fwc.services.DataAccess;
-import me.necrosis.fwc.services.UserService;
+import me.necrosis.fwc.core.services.DataAccess;
+import me.necrosis.fwc.core.entities.User;
+import me.necrosis.fwc.core.services.UserService;
 
 public class UserServiceImpl implements UserService {
 

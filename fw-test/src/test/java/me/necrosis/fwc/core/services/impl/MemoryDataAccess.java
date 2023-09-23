@@ -1,10 +1,9 @@
-package me.necrosis.fwc.services.impl;
+package me.necrosis.fwc.core.services.impl;
 
-import me.necrosis.fwc.services.DataAccess;
+import me.necrosis.fwc.core.services.DataAccess;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public class MemoryDataAccess implements DataAccess {

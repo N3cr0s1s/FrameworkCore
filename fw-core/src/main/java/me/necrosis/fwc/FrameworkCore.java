@@ -5,6 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import me.necrosis.fwc.exception.FwException;
@@ -22,46 +23,51 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public abstract class FrameworkCore {
 
-    private final Injector injector;
+    @NotNull
+    @Getter(AccessLevel.PROTECTED)
+    private final FwOptions options;
+    private Injector injector;
 
     /**
      * FrameworkCore entry point
      */
     public FrameworkCore(@NotNull FwOptions options) {
-        Preconditions.checkNotNull(options);
+        this.options = Preconditions.checkNotNull(options);
 
-        log.trace("{} initialization started...", Constants.FRAMEWORK_CORE_NAME);
-
-        Collection<Module> modules = registerPlugins();
-        AbstractModule commonModule = LoggerUtil.processTimeLogger("Creating modules", log, this::configureServices);
-        modules.add(commonModule);
-        this.injector = LoggerUtil.processTimeLogger(
-                "Creating injector", log,
-                () -> Guice.createInjector(modules));
-
-        modules.stream()
-                .filter(x -> !x.equals(commonModule))
-                .forEach(x -> log.trace("Plugin registered: {}", x.getClass()));
-
-        log.trace("{} initialization done.", Constants.FRAMEWORK_CORE_NAME);
-
-        registerExceptionHandler(options);
-        handleStart(options);
+        if (this.options.isAutoInit()) {
+            this.init();
+        }
     }
 
     public FrameworkCore() {
         this(FwOptions.getDefault());
     }
 
-    private void registerExceptionHandler(@NotNull FwOptions options) {
-        if (!options.isGlobalExceptionHandler()) {
-            return;
-        }
+    public void init() {
+        log.trace("{} initialization started...", Constants.FRAMEWORK_CORE_NAME);
 
-        LoggerUtil.processTimeLogger(
-                "Registering global exception handler", log,
-                () -> Thread.setDefaultUncaughtExceptionHandler(this::onGlobalException)
-        );
+        registerModules();
+        handleStart(options);
+
+        log.trace("{} initialization done.", Constants.FRAMEWORK_CORE_NAME);
+    }
+
+    private void registerModules() {
+        final Injector injector;
+        Collection<Module> modules = registerPlugins();
+        AbstractModule commonModule = LoggerUtil.processTimeLogger("Creating modules", log, this::configureServices);
+
+        Preconditions.checkNotNull(commonModule);
+
+        modules.add(commonModule);
+        injector = LoggerUtil.processTimeLogger(
+                "Creating injector", log,
+                () -> Guice.createInjector(modules));
+
+        modules.stream()
+                .filter(x -> !x.equals(commonModule))
+                .forEach(x -> log.trace("Plugin registered: {}", x.getClass()));
+        this.injector = injector;
     }
 
     private void handleStart(@NotNull FwOptions options) {
@@ -86,6 +92,7 @@ public abstract class FrameworkCore {
         });
     }
 
+
     /**
      * Register services to IOC container.
      * <br><br>
@@ -100,10 +107,6 @@ public abstract class FrameworkCore {
     }
 
     public void onEnd(boolean successfullyEnded) throws Throwable {
-    }
-
-    public void onGlobalException(Thread t, Throwable e) {
-        log.error("Global exception handler received an exception.", e);
     }
 
     public void onFwException(Thread t, FwException e) {
